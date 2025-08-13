@@ -6,7 +6,7 @@ return [
     '%sNote:%s Please read and accept the "%s".' => '%sHinweis:%s Bitte lesen und akzeptieren Sie die "%s".',
     '%sNote:%s Please read and accept our rules and notes.' => '%sHinweis:%s Bitte lesen und akzeptieren Sie unsere Regeln und Hinweise.',
     '%We are sorry:%s This did not work somehow. Please try again.'
-        => '%sEntschuldigung:%s Das hat irgendwie nicht funktioniert. Bitte versuchen Sie es erneut.',
+    => '%sEntschuldigung:%s Das hat irgendwie nicht funktioniert. Bitte versuchen Sie es erneut.',
     '%sCongratulations:%s Your %s has been booked!' => '%sHerzlichen Glückwunsch:%s Ihr %s wurde für Sie gebucht.',
 
     'This booking cannot be cancelled anymore online.' => 'Diese Buchung kann nicht mehr storniert werden.',
@@ -35,12 +35,12 @@ return [
     'You have no permission to cancel this subscription' => 'Sie dürfen dieses Abo nicht stornieren',
     'This booking does not contain any distinct reservations' => 'Diese Buchung enthält keine Reservierungen',
     'This booking does contain multiple distinct reservations (please contact our support)'
-        => 'Diese Buchung enthält mehrere einzelne Reservierungen',
+    => 'Diese Buchung enthält mehrere einzelne Reservierungen',
 
     'incl.' => 'inkl.',
     'including' => 'inkl.',
     'plus' => 'zzgl.',
-    'VAT' => 'USt',
+    'GST' => 'USt',
 
     'Summary of your booking:' => 'Übersicht über Ihre Buchung:',
     '%s items' => '%s Stück',
@@ -56,9 +56,9 @@ return [
     'Yes, I have %1$sread and accepted%2$s the "%3$s"' => 'Ja, ich habe die "%3$s" %1$sgelesen und akzeptiert%2$s',
     'Yes, I have %sread and accepted%s these rules and notes' => 'Ja, ich habe die Regeln und Hinweise %sgelesen und akzeptiert%s',
 
-	'Your booking will be binding.' => 'Ihre Buchung ist verbindlich.',
+    'Your booking will be binding.' => 'Ihre Buchung ist verbindlich.',
     'Your booking will be binding, however, you can cancel it up to %s before it takes place.'
-        => 'Ihre Buchung ist verbindlich. Sie können sie jedoch bis zu %s vorher stornieren.',
+    => 'Ihre Buchung ist verbindlich. Sie können sie jedoch bis zu %s vorher stornieren.',
     'Complete booking' => 'Buchung abschließen',
 
     'Cancel this booking' => 'Buchung stornieren',
@@ -95,7 +95,7 @@ return [
     'Check' => 'Prüfen',
 
     'You need to activate %sJavaScript%s in your web browser to proceed. If in doubt, switch to another web browser (e.g. Mozilla Firefox).'
-        => '%sJavaScript%s muss in Ihrem Webbrowser aktiviert sein um fortzufahren. Im Zweifelsfall benutzen Sie einfach einen anderen Webbrowser (z. B. Mozilla Firefox).',
+    => '%sJavaScript%s muss in Ihrem Webbrowser aktiviert sein um fortzufahren. Im Zweifelsfall benutzen Sie einfach einen anderen Webbrowser (z. B. Mozilla Firefox).',
 
     'until' => 'bis',
     'with' => 'mit',

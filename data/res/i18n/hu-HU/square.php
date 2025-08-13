@@ -6,7 +6,7 @@ return [
     '%sNote:%s Please read and accept the "%s".' => '%sSegédlet:%s Kérem olvassa el és fogadja el a "%s".',
     '%sNote:%s Please read and accept our rules and notes.' => '%sSegédlet:%s Kérem olvassa el és fogadja el a szabályokat és a segédletet.',
     '%We are sorry:%s This did not work somehow. Please try again.'
-        => '%sSajnáljuk:%s Ez valamiért nem működott. Kérem próbálja meg újra.',
+    => '%sSajnáljuk:%s Ez valamiért nem működott. Kérem próbálja meg újra.',
     '%sCongratulations:%s Your %s has been booked!' => '%sGratulálunk:%s A ön %s lefoglalva.',
 
     'This booking cannot be cancelled anymore online.' => 'Ezt a foglalást nem lehet online lemondani.',
@@ -35,12 +35,12 @@ return [
     'You have no permission to cancel this subscription' => 'Önnek nincs jogosultsága lemondani ezt az előfizetést',
     'This booking does not contain any distinct reservations' => 'Ez a foglalás nem tartalmaz pontosan kivehető lefoglalásokat',
     'This booking does contain multiple distinct reservations (please contact our support)'
-        => 'Ez a foglalás nem tartalmaz pontosan kivehető lefoglalásokat, kérjük lépjen kapcsolatba az operátorunkkal',
+    => 'Ez a foglalás nem tartalmaz pontosan kivehető lefoglalásokat, kérjük lépjen kapcsolatba az operátorunkkal',
 
     'incl.' => 'beleértve',
     'including' => 'beleértve',
     'plus' => 'plus',
-    'VAT' => 'Áfa',
+    'GST' => 'Áfa',
 
     'Summary of your booking:' => 'A foglalások összegzése:',
     '%s items' => '%s példány',
@@ -56,9 +56,9 @@ return [
     'Yes, I have %1$sread and accepted%2$s the "%3$s"' => 'Igen, %1$selolvastam és elfogadtam%2$s a "%3$s"',
     'Yes, I have %sread and accepted%s these rules and notes' => 'Igen, elolvastam és elfogadtam %sezeket a szabályokat és segítségeket%s',
 
-	'Your booking will be binding.' => 'A foglalása kötelező érvényű lesz.',
+    'Your booking will be binding.' => 'A foglalása kötelező érvényű lesz.',
     'Your booking will be binding, however, you can cancel it up to %s before it takes place.'
-        => 'A foglalása kötelező érvényű lesz, azonban lemondhatja a foglalás előtt %s-ig',
+    => 'A foglalása kötelező érvényű lesz, azonban lemondhatja a foglalás előtt %s-ig',
 
     'Cancel this booking' => 'Ezen foglalás lemondása',
     'Cancel booking' => 'Foglalás lemondása',
@@ -94,7 +94,7 @@ return [
     'Check' => 'Ellenőrzés',
 
     'You need to activate %sJavaScript%s in your web browser to proceed. If in doubt, switch to another web browser (e.g. Mozilla Firefox).'
-        => '%sJavaScript%s-et aktiválni kell a böngészőben hogy továbbhaladhasson. Ha még mindig fenáll a probláma váltson böngészőt (pl. Mozilla Firefox).',
+    => '%sJavaScript%s-et aktiválni kell a böngészőben hogy továbbhaladhasson. Ha még mindig fenáll a probláma váltson böngészőt (pl. Mozilla Firefox).',
 
     'until' => '-',
     'with' => 'val',

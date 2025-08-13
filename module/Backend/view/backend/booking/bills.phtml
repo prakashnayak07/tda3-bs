@@ -19,9 +19,13 @@ $last_vat_rate = 19;
     <div class="separator-small"></div>
 
     <form method="post">
-        <p><?= $this->t(sprintf('Status: %s',
-            '<select name="ebf-status">' . $this->formSelect()->renderOptions(
-                $this->bookingStatusService->getStatusTitles(), array($this->booking->getBillingStatus())) . '</select>')) ?></p>
+        <p><?= $this->t(sprintf(
+                'Status: %s',
+                '<select name="ebf-status">' . $this->formSelect()->renderOptions(
+                    $this->bookingStatusService->getStatusTitles(),
+                    array($this->booking->getBillingStatus())
+                ) . '</select>'
+            )) ?></p>
 
         <div class="sandbox">
             <table class="default-table middle-table">
@@ -62,7 +66,7 @@ $last_vat_rate = 19;
 
                             ?>
 
-                            <input type="text" name="ebf-<?= $bill->need('bbid') ?>-vat-rate" value="<?= $last_vat_rate ?>" style="width: 20px; text-align: right;"> % <?= $this->t('VAT') ?>
+                            <input type="text" name="ebf-<?= $bill->need('bbid') ?>-vat-rate" value="<?= $last_vat_rate ?>" style="width: 20px; text-align: right;"> % <?= $this->t('GST') ?>
                         </td>
 
                         <td>
@@ -96,7 +100,7 @@ $last_vat_rate = 19;
 
                         ?>
 
-                        <input type="text" name="ebf-new-vat-rate" value="<?= $last_vat_rate ?>" style="width: 20px; text-align: right;"> % <?= $this->t('VAT') ?>
+                        <input type="text" name="ebf-new-vat-rate" value="<?= $last_vat_rate ?>" style="width: 20px; text-align: right;"> % <?= $this->t('GST') ?>
                     </td>
                 </tr>
 

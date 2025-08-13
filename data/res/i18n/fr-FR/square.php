@@ -6,7 +6,7 @@ return [
     '%sNote:%s Please read and accept the "%s".' => '%sAttention:%s Lire et accepter "%s".',
     '%sNote:%s Please read and accept our rules and notes.' => '%sAttention:%s Lire et accepter nos termes et règles.',
     '%We are sorry:%s This did not work somehow. Please try again.'
-        => '%Désolé:%s cela n\'a pas fonctionné. Veuillez essayer à nouveau.',
+    => '%Désolé:%s cela n\'a pas fonctionné. Veuillez essayer à nouveau.',
     '%sCongratulations:%s Your %s has been booked!' => '%sBravo:%s Votre %s est réservé.',
 
     'This booking cannot be cancelled anymore online.' => 'Cette réservation ne pourra plus être annulée en ligne.',
@@ -35,12 +35,12 @@ return [
     'You have no permission to cancel this subscription' => 'Vous n\"avez pas la permission d\'annuler cette réservation',
     'This booking does not contain any distinct reservations' => 'This booking does not contain any distinct reservations',
     'This booking does contain multiple distinct reservations (please contact our support)'
-        => 'This booking does contain multiple distinct reservations (please contact our support)',
+    => 'This booking does contain multiple distinct reservations (please contact our support)',
 
     'incl.' => 'incl.',
     'including' => 'including.',
     'plus' => 'plus.',
-    'VAT' => 'TVA',
+    'GST' => 'TVA',
 
     'Summary of your booking:' => 'Résumé de vos réservations:',
     '%s items' => '%s Heures',
@@ -56,9 +56,9 @@ return [
     'Yes, I have %1$sread and accepted%2$s the "%3$s"' => 'J\'ai lu et accepté%1$s %2$s le "%3$s"',
     'Yes, I have %sread and accepted%s these rules and notes' => 'J\'ai lu %set accepté%s ce règlement',
 
-	'Your booking will be binding.' => 'Votre réservation sera obligatoire.',
+    'Your booking will be binding.' => 'Votre réservation sera obligatoire.',
     'Your booking will be binding, however, you can cancel it up to %s before it takes place.'
-        => 'Votre réservation sera obligatoire. Même si vous pouvez annuler %s  avant l\'événement.',
+    => 'Votre réservation sera obligatoire. Même si vous pouvez annuler %s  avant l\'événement.',
     'Complete booking' => 'Valider la Réservation',
 
     'Cancel this booking' => 'Annuler cette réservation',
@@ -95,7 +95,7 @@ return [
     'Check' => 'Voir',
 
     'You need to activate %sJavaScript%s in your web browser to proceed. If in doubt, switch to another web browser (e.g. Mozilla Firefox).'
-        => 'vous devez activer %sJavaScript%s dans votre navigateur pour continuer. en cas de doute, passez à un autre navigateur (e.g. Mozilla Firefox).',
+    => 'vous devez activer %sJavaScript%s dans votre navigateur pour continuer. en cas de doute, passez à un autre navigateur (e.g. Mozilla Firefox).',
 
     'until' => 'jusqu\'à',
     'with' => 'avec',

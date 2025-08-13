@@ -22,20 +22,53 @@ $this->headScript()->appendFile($this->basePath('js/controller/backend/config-sq
     <div class="separator separator-line"></div>
 
     <style>
-        .datepicker { width: 75px; }
-        .timepicker { width: 39px; }
-        .pricepicker { width: 50px; color: #333 !important; font-weight: bold; text-align: right; }
-        .timeblockpicker { width: 25px; text-align: right; }
+        .datepicker {
+            width: 75px;
+        }
 
-        .pricing-grammar { margin: 0 6px; color: #777; cursor: default; }
-        .pricing-grammar:last-child { margin: 0 0 0 6px; }
+        .timepicker {
+            width: 39px;
+        }
 
-        .pricing-delete { color: #777 !important; text-decoration: none; cursor: pointer; }
-        .pricing-delete:hover { color: #333; }
+        .pricepicker {
+            width: 50px;
+            color: #333 !important;
+            font-weight: bold;
+            text-align: right;
+        }
 
-        .default-table td { padding-bottom: 3px !important; }
+        .timeblockpicker {
+            width: 25px;
+            text-align: right;
+        }
 
-        #pricing-table-template { display: none; }
+        .pricing-grammar {
+            margin: 0 6px;
+            color: #777;
+            cursor: default;
+        }
+
+        .pricing-grammar:last-child {
+            margin: 0 0 0 6px;
+        }
+
+        .pricing-delete {
+            color: #777 !important;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .pricing-delete:hover {
+            color: #333;
+        }
+
+        .default-table td {
+            padding-bottom: 3px !important;
+        }
+
+        #pricing-table-template {
+            display: none;
+        }
     </style>
 
     <script type="text/javascript">
@@ -59,112 +92,124 @@ $this->headScript()->appendFile($this->basePath('js/controller/backend/config-sq
 
         ?>
 
-        var pricingRules = [ <?= implode(', ', $jsRules) ?> ];
+        var pricingRules = [<?= implode(', ', $jsRules) ?>];
     </script>
 
     <div id="pricing-table-template">
-        <table><tbody>
-            <tr>
-                <td class="pricing-date-range">
-                    <input type="text" value="" class="pricing-dateStart datepicker"><span class="pricing-grammar"><?= $this->t('to') ?></span><input type="text" value="" class="pricing-dateEnd datepicker">
-                </td>
-                <td>
-                    <table><tbody>
-                        <tr>
-                            <td>
-                                <table><tbody>
-                                    <tr>
-                                        <td class="pricing-day-range">
-                                            <?php
-
-                                            $days = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
-
-                                            echo '<select class="pricing-dayStart">';
-                                            foreach ($days as $index => $day) echo '<option value="' . $index . '"' . ($index == 0 ? ' selected="selected"' : '') . '>' . $this->t($day) . '</option>';
-                                            echo '</select>';
-
-                                            echo '<span class="pricing-grammar">' . $this->t('to') . '</span>';
-
-                                            echo '<select class="pricing-dayEnd">';
-                                            foreach ($days as $index => $day) echo '<option value="' . $index . '"' . ($index == 4 ? ' selected="selected"' : '') . '>' . $this->t($day) . '</option>';
-                                            echo '</select>';
-
-                                            ?>
-                                        </td>
-                                        <td>
-                                            <table><tbody>
+        <table>
+            <tbody>
+                <tr>
+                    <td class="pricing-date-range">
+                        <input type="text" value="" class="pricing-dateStart datepicker"><span class="pricing-grammar"><?= $this->t('to') ?></span><input type="text" value="" class="pricing-dateEnd datepicker">
+                    </td>
+                    <td>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table>
+                                            <tbody>
                                                 <tr>
+                                                    <td class="pricing-day-range">
+                                                        <?php
+
+                                                        $days = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+
+                                                        echo '<select class="pricing-dayStart">';
+                                                        foreach ($days as $index => $day) echo '<option value="' . $index . '"' . ($index == 0 ? ' selected="selected"' : '') . '>' . $this->t($day) . '</option>';
+                                                        echo '</select>';
+
+                                                        echo '<span class="pricing-grammar">' . $this->t('to') . '</span>';
+
+                                                        echo '<select class="pricing-dayEnd">';
+                                                        foreach ($days as $index => $day) echo '<option value="' . $index . '"' . ($index == 4 ? ' selected="selected"' : '') . '>' . $this->t($day) . '</option>';
+                                                        echo '</select>';
+
+                                                        ?>
+                                                    </td>
                                                     <td>
-                                                        <table><tbody>
-                                                            <tr>
-                                                                <td class="pricing-time-range">
-                                                                    <input type="text" value="06:00" maxlength="5" class="pricing-timeStart timepicker"><span class="pricing-grammar"><?= $this->t('to') ?></span><input type="text" value="24:00" maxlength="5" class="pricing-timeEnd timepicker"><span class="pricing-grammar"><?= $this->t('Clock') ?></span>
-                                                                </td>
-                                                                <td>
-                                                                    <table><tbody>
-                                                                        <tr>
-                                                                            <td class="pricing-price">
-                                                                                <?php
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <table>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td class="pricing-time-range">
+                                                                                        <input type="text" value="06:00" maxlength="5" class="pricing-timeStart timepicker"><span class="pricing-grammar"><?= $this->t('to') ?></span><input type="text" value="24:00" maxlength="5" class="pricing-timeEnd timepicker"><span class="pricing-grammar"><?= $this->t('Clock') ?></span>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <table>
+                                                                                            <tbody>
+                                                                                                <tr>
+                                                                                                    <td class="pricing-price">
+                                                                                                        <?php
 
-                                                                                echo '<input type="text" value="0,00" maxlength="6" class="pricing-price-number pricepicker"><span class="pricing-grammar">' . $this->config('i18n.currency') . '</span>';
+                                                                                                        echo '<input type="text" value="0,00" maxlength="6" class="pricing-price-number pricepicker"><span class="pricing-grammar">' . $this->config('i18n.currency') . '</span>';
 
-                                                                                echo '<select class="pricing-rate-gross" style="width: 60px;">';
-                                                                                echo '<option value="0">' . $this->t('plus') . '</option>';
-                                                                                echo '<option value="1" selected="selected">' . $this->t('including') . '</option>';
-                                                                                echo '</select>';
+                                                                                                        echo '<select class="pricing-rate-gross" style="width: 60px;">';
+                                                                                                        echo '<option value="0">' . $this->t('plus') . '</option>';
+                                                                                                        echo '<option value="1" selected="selected">' . $this->t('including') . '</option>';
+                                                                                                        echo '</select>';
 
-                                                                                echo '<input type="text" value="19" maxlength="3" class="pricing-rate" style="width: 20px;">';
-                                                                                echo '<span class="pricing-grammar">% ' . $this->t('VAT') . '</span>';
+                                                                                                        echo '<input type="text" value="19" maxlength="3" class="pricing-rate" style="width: 20px;">';
+                                                                                                        echo '<span class="pricing-grammar">% ' . $this->t('GST') . '</span>';
 
-                                                                                echo '<span class="pricing-grammar">' . $this->t('for') . '</span>';
+                                                                                                        echo '<span class="pricing-grammar">' . $this->t('for') . '</span>';
 
-                                                                                echo '<select class="pricing-sid">';
-                                                                                echo '<option value="null">' . sprintf($this->t('All %s'), $this->option('subject.square.type.plural')) . '</option>';
-                                                                                foreach ($this->squares as $square) {
-                                                                                    echo '<option value="' . $square->get('sid') . '">' . $this->option('subject.square.type') . ' ' . $square->get('name') . '</option>';
-                                                                                }
-                                                                                echo '</select>';
+                                                                                                        echo '<select class="pricing-sid">';
+                                                                                                        echo '<option value="null">' . sprintf($this->t('All %s'), $this->option('subject.square.type.plural')) . '</option>';
+                                                                                                        foreach ($this->squares as $square) {
+                                                                                                            echo '<option value="' . $square->get('sid') . '">' . $this->option('subject.square.type') . ' ' . $square->get('name') . '</option>';
+                                                                                                        }
+                                                                                                        echo '</select>';
 
-                                                                                echo '<span class="pricing-grammar">' . $this->t('and') . '</span>';
-                                                                                echo '<input type="text" value="' . round($this->squaresTimeBlock / 60) . '" maxlength="3" class="pricing-timeBlock timeblockpicker">';
-                                                                                echo '<span class="pricing-grammar">Min.</span>';
+                                                                                                        echo '<span class="pricing-grammar">' . $this->t('and') . '</span>';
+                                                                                                        echo '<input type="text" value="' . round($this->squaresTimeBlock / 60) . '" maxlength="3" class="pricing-timeBlock timeblockpicker">';
+                                                                                                        echo '<span class="pricing-grammar">Min.</span>';
 
-                                                                                echo '<a href="#" class="pricing-grammar pricing-delete tooltip">x</a>';
+                                                                                                        echo '<a href="#" class="pricing-grammar pricing-delete tooltip">x</a>';
 
-                                                                                ?>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <a href="#" class="pricing-price-new unlined gray"><em><?= $this->t('New price') ?></em></a>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody></table>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody></table>
+                                                                                                        ?>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <td>
+                                                                                                        <a href="#" class="pricing-price-new unlined gray"><em><?= $this->t('New price') ?></em></a>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <a href="#" class="pricing-time-range-new unlined gray"><em><?= $this->t('New time') ?></em></a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        <a href="#" class="pricing-time-range-new unlined gray"><em><?= $this->t('New time') ?></em></a>
-                                                    </td>
-                                                </tr>
-                                            </tbody></table>
-                                        </td>
-                                    </tr>
-                                </tbody></table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <a href="#" class="pricing-day-range-new unlined gray"><em><?= $this->t('New day') ?></em></a>
-                            </td>
-                        </tr>
-                    </tbody></table>
-                </td>
-            </tr>
-        </tbody></table>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#" class="pricing-day-range-new unlined gray"><em><?= $this->t('New day') ?></em></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div id="pricing-table">

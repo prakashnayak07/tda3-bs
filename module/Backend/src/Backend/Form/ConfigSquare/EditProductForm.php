@@ -168,7 +168,7 @@ class EditProductForm extends Form
                 'value' => '19',
             ),
             'options' => array(
-                'label' => 'VAT',
+                'label' => 'GST',
                 'postfix' => '%',
             ),
         ));
@@ -279,15 +279,15 @@ class EditProductForm extends Form
                     array(
                         'name' => 'Callback',
                         'options' => array(
-                            'callback' => function($value) {
-                                    try {
-                                        new \DateTime($value);
+                            'callback' => function ($value) {
+                                try {
+                                    new \DateTime($value);
 
-                                        return true;
-                                    } catch (\Exception $e) {
-                                        return false;
-                                    }
-                                },
+                                    return true;
+                                } catch (\Exception $e) {
+                                    return false;
+                                }
+                            },
                             'message' => 'Invalid date',
                         ),
                     ),
@@ -309,15 +309,15 @@ class EditProductForm extends Form
                     array(
                         'name' => 'Callback',
                         'options' => array(
-                            'callback' => function($value) {
-                                    try {
-                                        new \DateTime($value);
+                            'callback' => function ($value) {
+                                try {
+                                    new \DateTime($value);
 
-                                        return true;
-                                    } catch (\Exception $e) {
-                                        return false;
-                                    }
-                                },
+                                    return true;
+                                } catch (\Exception $e) {
+                                    return false;
+                                }
+                            },
                             'message' => 'Invalid date',
                         ),
                     ),
@@ -353,5 +353,4 @@ class EditProductForm extends Form
             ),
         )));
     }
-
 }
