@@ -4,8 +4,8 @@
   "private": true,
   "description": "Online booking system for courts",
   "scripts": {
-    "tailwind:build": "tailwindcss -i ./src/tailwind.css -o ./public/css/tailwind.css",
-    "tailwind:watch": "tailwindcss -i ./src/tailwind.css -o ./public/css/tailwind.css --watch"
+    "tailwind:build": "tailwindcss -i ./src/input.css -o ./public/css/tailwind.css",
+    "tailwind:watch": "tailwindcss -i ./src/input.css -o ./public/css/tailwind.css --watch"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",

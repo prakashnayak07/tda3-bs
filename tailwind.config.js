@@ -1,10 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    // Ensure Tailwind utilities win over legacy CSS
+    important: true,
     content: [
         "./module/**/*.phtml",
         "./public/**/*.{php,html,js}",
         "./index.php",
     ],
+
     theme: {
         extend: {
             colors: {
@@ -60,12 +63,15 @@ module.exports = {
                 "2xl": "var(--shadow-2xl)",
             },
             letterSpacing: {
-                tighter: "var(--tracking-tighter)",
-                tight: "var(--tracking-tight)",
-                normal: "var(--tracking-normal)",
-                wide: "var(--tracking-wide)",
-                wider: "var(--tracking-wider)",
-                widest: "var(--tracking-widest)",
+                tighter: "-0.05em",
+                tight: "-0.025em",
+                normal: "0em",
+                wide: "0.025em",
+                wider: "0.05em",
+                widest: "0.1em",
+            },
+            maxWidth: {
+                '8xl': '88rem',
             },
         },
     },
