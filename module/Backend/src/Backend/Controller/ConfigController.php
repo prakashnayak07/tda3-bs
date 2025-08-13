@@ -32,18 +32,18 @@ class ConfigController extends AbstractActionController
                 foreach (TextForm::$definitions as $key => $value) {
                     $formKey = str_replace('.', '_', $key);
 
-	                $currentValue = $optionManager->get($key);
+                    $currentValue = $optionManager->get($key);
                     $formValue = $textData['cf-' . $formKey];
 
-	                if (isset($value[2]) && $value[2]) {
-				        $type = $value[2];
-			        } else {
-				        $type = 'Text';
-			        }
+                    if (isset($value[2]) && $value[2]) {
+                        $type = $value[2];
+                    } else {
+                        $type = 'Text';
+                    }
 
-	                if ($type == 'Checkbox') {
-				        $formValue = (boolean) $formValue;
-			        }
+                    if ($type == 'Checkbox') {
+                        $formValue = (bool) $formValue;
+                    }
 
                     if (($formValue && $formValue != $currentValue) || is_bool($formValue)) {
                         $optionManager->set($key, $formValue, $this->config('i18n.locale'));
@@ -104,6 +104,31 @@ class ConfigController extends AbstractActionController
 
             return $this->redirect()->toRoute('backend/config/help');
         }
+    }
+
+    public function paymentAction()
+    {
+        $this->authorize('admin.config');
+
+        $serviceManager = @$this->getServiceLocator();
+        $optionManager = $serviceManager->get('Base\Manager\OptionManager');
+
+        if ($this->getRequest()->isPost()) {
+            $stripeEnabled = $this->params()->fromPost('cf-stripe-enabled') === 'on';
+            $testMode = $this->params()->fromPost('cf-test-mode') === 'on';
+
+            $optionManager->set('service.payment.stripe.enabled', $stripeEnabled);
+            $optionManager->set('service.payment.stripe.test_mode', $testMode);
+
+            $this->flashMessenger()->addSuccessMessage('Payment settings have been saved');
+
+            return $this->redirect()->toRoute('backend/config/payment');
+        }
+
+        return array(
+            'stripeEnabled' => $optionManager->get('service.payment.stripe.enabled', false),
+            'testMode' => $optionManager->get('service.payment.stripe.test_mode', true),
+        );
     }
 
     public function behaviourAction()
@@ -214,8 +239,10 @@ class ConfigController extends AbstractActionController
                     $rulesFileName = str_replace(' ', '-', $rulesFileName);
                     $rulesFileName = strtolower($rulesFileName);
 
-                    $destination = sprintf('docs-client/upload/%s.pdf',
-                        $rulesFileName);
+                    $destination = sprintf(
+                        'docs-client/upload/%s.pdf',
+                        $rulesFileName
+                    );
 
                     move_uploaded_file($termsFile['tmp_name'], sprintf('%s/public/%s', getcwd(), $destination));
 
@@ -236,8 +263,10 @@ class ConfigController extends AbstractActionController
                     $privacyFileName = str_replace(' ', '-', $privacyFileName);
                     $privacyFileName = strtolower($privacyFileName);
 
-                    $destination = sprintf('docs-client/upload/%s.pdf',
-                        $privacyFileName);
+                    $destination = sprintf(
+                        'docs-client/upload/%s.pdf',
+                        $privacyFileName
+                    );
 
                     move_uploaded_file($privacyFile['tmp_name'], sprintf('%s/public/%s', getcwd(), $destination));
 
@@ -301,5 +330,4 @@ class ConfigController extends AbstractActionController
             'statusColorsForm' => $statusColorsForm,
         );
     }
-
 }

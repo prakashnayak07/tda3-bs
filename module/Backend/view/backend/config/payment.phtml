@@ -1,0 +1,84 @@
+<?php
+
+$this->setup(array(
+    'title' => 'Payment Configuration',
+    'panel' => 'centered-panel large-sized',
+    'back' => array(
+        'Configuration' => $this->url('backend/config'),
+    ),
+));
+
+?>
+
+<div>
+    <h1><?= $this->t('Payment Configuration') ?></h1>
+
+    <div class="separator-small"></div>
+
+    <p><?= $this->t('Configure Stripe payment settings and API keys') ?></p>
+
+    <div class="separator separator-line"></div>
+
+    <div class="padded">
+        <form method="post" action="<?= $this->url('backend/config/payment') ?>">
+            <table class="default-table">
+                <tr>
+                    <td class="default-form-label-row"></td>
+                    <td colspan="2">
+                        <div style="position: relative; top: -8px;">
+                            <input type="checkbox" name="cf-stripe-enabled" value="on" <?= $stripeEnabled ? 'checked' : '' ?>>
+                            <label><?= $this->t('Enable Stripe Payments') ?></label>
+                        </div>
+                        <div class="default-form-notes">
+                            <?= $this->t('Enable online payments using Stripe') ?>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="default-form-label-row"></td>
+                    <td colspan="2">
+                        <div style="position: relative; top: -8px;">
+                            <input type="checkbox" name="cf-test-mode" value="on" <?= $testMode ? 'checked' : '' ?>>
+                            <label><?= $this->t('Test Mode') ?></label>
+                        </div>
+                        <div class="default-form-notes">
+                            <?= $this->t('Use Stripe test keys (recommended for development)') ?>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="default-form-label-row"></td>
+                    <td colspan="2">
+                        <button type="submit" class="default-button"><?= $this->t('Save') ?></button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="separator separator-line"></div>
+
+    <div class="padded">
+        <h3><?= $this->t('Configuration Instructions') ?></h3>
+
+        <h4><?= $this->t('Stripe API Keys') ?></h4>
+        <p><?= $this->t('Configure your Stripe API keys in the') ?> <code>config/stripe.env</code> <?= $this->t('file:') ?></p>
+
+        <pre style="background: #f5f5f5; padding: 10px; border-radius: 3px; font-size: 12px;">STRIPE_TEST_SECRET_KEY=sk_test_...
+STRIPE_TEST_PUBLISHABLE_KEY=pk_test_...
+STRIPE_LIVE_SECRET_KEY=sk_live_...
+STRIPE_LIVE_PUBLISHABLE_KEY=pk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...</pre>
+
+        <h4><?= $this->t('Webhook Setup') ?></h4>
+        <p><?= $this->t('For production, set up a webhook in your Stripe dashboard pointing to:') ?></p>
+        <code><?= $this->serverUrl() ?>/payment/webhook</code>
+
+        <p><?= $this->t('Events to listen for:') ?></p>
+        <ul>
+            <li><code>checkout.session.completed</code></li>
+        </ul>
+    </div>
+</div>

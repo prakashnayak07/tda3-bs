@@ -51,18 +51,19 @@ class SquarePricingManager extends AbstractManager
     {
         $connection = $this->squarePricingTable->getAdapter()->getDriver()->getConnection();
 
-        if (! $connection->inTransaction()) {
-            $connection->beginTransaction();
-            $transaction = true;
-        } else {
-            $transaction = false;
+        // Ensure no existing transaction is active
+        if ($connection->inTransaction()) {
+            $connection->rollback();
         }
+
+        $connection->beginTransaction();
 
         try {
             $adapter = $this->squarePricingTable->getAdapter();
             $adapter->query('TRUNCATE TABLE ' . SquarePricingTable::NAME, Adapter::QUERY_MODE_EXECUTE);
 
-            $statement = $adapter->query('INSERT INTO ' . SquarePricingTable::NAME . ' (sid, priority, date_start, date_end, day_start, day_end, time_start, time_end, price, rate, gross, per_time_block) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            $statement = $adapter->query(
+                'INSERT INTO ' . SquarePricingTable::NAME . ' (sid, priority, date_start, date_end, day_start, day_end, time_start, time_end, price, rate, gross, per_time_block) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
             );
 
             foreach ($rules as $rule) {
@@ -71,20 +72,24 @@ class SquarePricingManager extends AbstractManager
                 }
 
                 $statement->execute($rule);
-                $transaction = false;
             }
 
             $connection->commit();
 
+            // Reload the rules from the database after the transaction
+            $this->rules = array();
+            $select = $this->squarePricingTable->getSql()->select();
+            $select->order('priority ASC');
+
+            foreach ($this->squarePricingTable->selectWith($select) as $result) {
+                $this->rules[] = $result;
+            }
+
             $this->getEventManager()->trigger('create', $rules);
 
             return $rules;
-
         } catch (\Exception $e) {
-            if ($transaction) {
-                $connection->rollback();
-            }
-
+            $connection->rollback();
             throw $e;
         }
     }
@@ -507,5 +512,4 @@ class SquarePricingManager extends AbstractManager
 
         return $finalPricingInRange;
     }
-
 }

@@ -241,6 +241,15 @@ return array(
                                     ),
                                 ),
                             ),
+                            'payment' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/payment',
+                                    'defaults' => array(
+                                        'action' => 'payment',
+                                    ),
+                                ),
+                            ),
                             'square' => array(
                                 'type' => 'Literal',
                                 'options' => array(

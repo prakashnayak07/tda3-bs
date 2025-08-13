@@ -130,6 +130,10 @@ class BookingController extends AbstractActionController
 
         $byproducts['products'] = $products;
 
+        // Add Stripe status for the view
+        $optionManager = $serviceManager->get('Base\Manager\OptionManager');
+        $byproducts['stripeEnabled'] = $optionManager->get('service.payment.stripe.enabled', false);
+
         /* Check passed player names */
 
         if ($playerNamesParam) {
@@ -153,32 +157,68 @@ class BookingController extends AbstractActionController
 
         if ($confirmationHash) {
             if ($square->getMeta('rules.document.file') && $acceptRulesDocument != 'on') {
-                $byproducts['message'] = sprintf($this->t('%sNote:%s Please read and accept the "%s".'),
-                    '<b>', '</b>', $square->getMeta('rules.document.name', 'Rules-document'));
+                $byproducts['message'] = sprintf(
+                    $this->t('%sNote:%s Please read and accept the "%s".'),
+                    '<b>',
+                    '</b>',
+                    $square->getMeta('rules.document.name', 'Rules-document')
+                );
             }
 
             if ($square->getMeta('rules.text') && $acceptRulesText != 'on') {
-                $byproducts['message'] = sprintf($this->t('%sNote:%s Please read and accept our rules and notes.'),
-                    '<b>', '</b>');
+                $byproducts['message'] = sprintf(
+                    $this->t('%sNote:%s Please read and accept our rules and notes.'),
+                    '<b>',
+                    '</b>'
+                );
             }
 
             if ($confirmationHash != $confirmationHashOriginal) {
-                $byproducts['message'] = sprintf($this->t('%We are sorry:%s This did not work somehow. Please try again.'),
-                    '<b>', '</b>');
+                $byproducts['message'] = sprintf(
+                    $this->t('%We are sorry:%s This did not work somehow. Please try again.'),
+                    '<b>',
+                    '</b>'
+                );
             }
 
             if (! isset($byproducts['message'])) {
 
                 $bills = array();
 
+                // Add court booking pricing
+                $squarePricingManager = $serviceManager->get('Square\Manager\SquarePricingManager');
+                $pricing = $squarePricingManager->getFinalPricingInRange($byproducts['dateStart'], $byproducts['dateEnd'], $square, $quantityParam);
+
+                if ($pricing) {
+                    $squareType = $this->option('subject.square.type');
+                    $squareName = $this->t($square->need('name'));
+                    $dateRangeHelper = $serviceManager->get('ViewHelperManager')->get('DateRange');
+
+                    $description = sprintf(
+                        '%s %s, %s',
+                        $squareType,
+                        $squareName,
+                        $dateRangeHelper($byproducts['dateStart'], $byproducts['dateEnd'])
+                    );
+
+                    $bills[] = array(
+                        'description' => $description,
+                        'quantity' => $quantityParam,
+                        'price' => $pricing['price'] / 100, // Convert from cents to dollars
+                        'rate' => $pricing['rate'],
+                        'gross' => $pricing['gross'],
+                    );
+                }
+
+                // Add product bills
                 foreach ($products as $product) {
-                    $bills[] = new Bill(array(
+                    $bills[] = array(
                         'description' => $product->need('name'),
                         'quantity' => $product->needExtra('amount'),
-                        'price' => $product->need('price') * $product->needExtra('amount'),
+                        'price' => ($product->need('price') * $product->needExtra('amount')) / 100, // Convert from cents to dollars
                         'rate' => $product->need('rate'),
                         'gross' => $product->need('gross'),
-                    ));
+                    );
                 }
 
                 if ($square->get('allow_notes')) {
@@ -187,16 +227,50 @@ class BookingController extends AbstractActionController
                     $userNotes = '';
                 }
 
-                $bookingService = $serviceManager->get('Booking\Service\BookingService');
-                $bookingService->createSingle($user, $square, $quantityParam, $byproducts['dateStart'], $byproducts['dateEnd'], $bills, array(
-                    'player-names' => serialize($playerNames),
-                    'notes' => $userNotes,
-                ));
+                // Check if Stripe is enabled
+                $optionManager = $serviceManager->get('Base\Manager\OptionManager');
+                $stripeEnabled = $optionManager->get('service.payment.stripe.enabled', false);
 
-                $this->flashMessenger()->addSuccessMessage(sprintf($this->t('%sCongratulations:%s Your %s has been booked!'),
-                    '<b>', '</b>', $this->option('subject.square.type')));
+                if ($stripeEnabled) {
+                    // Create Stripe payment session instead of direct booking
+                    try {
+                        $stripeService = $serviceManager->get('Payment\Service\StripeService');
 
-                return $this->redirectBack()->toOrigin();
+                        if (!$stripeService->isConfigured()) {
+                            throw new RuntimeException('Stripe is not properly configured. Please check your API keys.');
+                        }
+
+                        // Prepare booking data for Stripe
+                        $bookingData = [
+                            'user_id' => $user->need('uid'),
+                            'square_id' => $square->need('sid'),
+                            'ds' => $byproducts['dateStart']->format('Y-m-d'),
+                            'de' => $byproducts['dateEnd']->format('Y-m-d'),
+                            'ts' => $byproducts['dateStart']->format('H:i'),
+                            'te' => $byproducts['dateEnd']->format('H:i'),
+                            'quantity' => $quantityParam,
+                            'customer_email' => $user->need('email'),
+                            'bills' => $bills,
+                            'meta' => [
+                                'player-names' => serialize($playerNames),
+                                'notes' => $userNotes,
+                            ],
+                        ];
+
+                        $successUrl = $this->url()->fromRoute('payment/success', [], ['force_canonical' => true]);
+                        $cancelUrl = $this->url()->fromRoute('payment/cancel', [], ['force_canonical' => true]);
+
+                        $session = $stripeService->createCheckoutSession($bookingData, $successUrl, $cancelUrl);
+
+                        // Redirect to Stripe payment
+                        return $this->redirect()->toUrl($session->url);
+                    } catch (RuntimeException $e) {
+                        $byproducts['message'] = sprintf($this->t('Payment setup failed: %s'), $e->getMessage());
+                    }
+                } else {
+                    // Stripe is not enabled, show error message
+                    $byproducts['message'] = $this->t('Online payment is not available. Please contact the administrator.');
+                }
             }
         }
 
@@ -234,8 +308,11 @@ class BookingController extends AbstractActionController
             $bookingService = $serviceManager->get('Booking\Service\BookingService');
             $bookingService->cancelSingle($booking);
 
-            $this->flashMessenger()->addSuccessMessage(sprintf($this->t('Your booking has been %scancelled%s.'),
-                '<b>', '</b>'));
+            $this->flashMessenger()->addSuccessMessage(sprintf(
+                $this->t('Your booking has been %scancelled%s.'),
+                '<b>',
+                '</b>'
+            ));
 
             return $this->redirectBack()->toOrigin();
         }
@@ -245,5 +322,4 @@ class BookingController extends AbstractActionController
             'origin' => $origin,
         ));
     }
-
 }

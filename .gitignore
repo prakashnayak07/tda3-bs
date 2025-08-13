@@ -12,3 +12,6 @@ Desktop.ini
 Thumbs.db
 
 .DS_Store
+
+# Stripe configuration (contains sensitive API keys)
+config/stripe.env

@@ -78,25 +78,27 @@ $this->setup(array(
         <?php endif; ?>
 
         <div class="centered-text small-text gray" style="margin-bottom: 12px;">
-	        <?php
+            <?php
 
-	        $cancelRange = $square->need('range_cancel');
+            $cancelRange = $square->need('range_cancel');
 
-	        if ($cancelRange) {
+            if ($cancelRange) {
 
-		        printf($this->t('Your booking will be binding, however, you can cancel it up to %s before it takes place.'),
-                    $this->prettyTime($cancelRange));
-	        } else {
+                printf(
+                    $this->t('Your booking will be binding, however, you can cancel it up to %s before it takes place.'),
+                    $this->prettyTime($cancelRange)
+                );
+            } else {
 
-		        echo $this->t('Your booking will be binding.');
-	        }
+                echo $this->t('Your booking will be binding.');
+            }
 
-	        ?>
+            ?>
         </div>
 
         <div class="centered-text">
             <input type="hidden" name="bf-confirm" value="<?= sha1('Quick and dirty' . floor(time() / 1800)) ?>">
-            <input type="submit" name="bf-submit" value="<?= $this->t('Complete booking') ?>" class="default-button">
+            <input type="submit" name="bf-submit" value="<?= $this->stripeEnabled ? $this->t('Continue to Payment') : $this->t('Complete booking') ?>" class="default-button">
         </div>
 
     </form>
