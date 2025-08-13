@@ -20,11 +20,108 @@
 </head>
 
 <body>
-    <div id="header" class="no-wrap no-print" <?= $this->headerAttributes() ?>>
+    <!-- New Header Code -->
+    <div id="smk-tennis-header" class="tw-scope bg-white">
+        <header class="relative border-b border-gray-200">
+            <div class="mx-auto max-w-7xl px-6 md:px-0">
+                <div class="flex h-24 items-center justify-between">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0">
+                        <a href="#" title="SMK Tennis Academy Home" class="block">
+                            <img class="h-16 w-auto" src="https://smktennis.com.au/wp-content/uploads/2025/02/smk-1.png" alt="SMK Tennis Academy Logo" />
+                        </a>
+                    </div>
+                    <!-- Desktop Navigation -->
+                    <nav class="hidden items-center lg:ml-auto lg:flex lg:space-x-8">
+                        <a href="https://smktennis.com.au/about-us/" class="relative text-base font-medium text-gray-700 transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 after:content-[''] hover:text-black hover:after:w-full">About Us</a>
 
+                        <!-- Coaching Dropdown -->
+                        <div class="group relative tw-scope">
+                            <div class="relative inline-flex items-center text-base font-medium text-gray-700 transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 after:content-[''] group-hover:after:w-full hover:text-black">
+                                <a class="relative text-base font-medium text-gray-700 transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 after:content-[''] hover:text-black hover:after:w-full" href="https://smktennis.com.au/coaching/">Coaching</a>
+                                <svg class="ml-1 h-4 w-4 transition-transform duration-300 group-hover:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                            <div class="invisible absolute top-full left-1/2 z-20 mt-2 w-56 -translate-x-1/2 translate-y-2 transform rounded-md bg-[#3f6229] p-4 opacity-0 shadow-lg transition-all duration-300 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                                <div class="space-y-3">
+                                    <a href="https://smktennis.com.au/services/junior-player/" class="block text-base font-normal text-white transition-colors duration-200 hover:text-gray-200">Junior coaching</a>
+                                    <a href="https://smktennis.com.au/services/adult-coaching/" class="block text-base font-normal text-white transition-colors duration-200 hover:text-gray-200">Adults coaching</a>
+                                    <a href="https://smktennis.com.au/services/performance-squad/" class="block text-base font-normal text-white transition-colors duration-200 hover:text-gray-200">Performance Squad</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="https://smktennis.com.au/events/" class="relative text-base font-medium text-gray-700 transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 after:content-[''] hover:text-black hover:after:w-full">Competitions</a>
+                        <a href="https://smktennis.com.au/blog/" class="relative text-base font-medium text-gray-700 transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 after:content-[''] hover:text-black hover:after:w-full">Resources</a>
+                        <a href="https://smktennis.com.au/shop/" class="relative text-base font-medium text-gray-700 transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 after:content-[''] hover:text-black hover:after:w-full">Shop</a>
+                        <a href="https://smktennis.com.au/contact/" class="relative text-base font-medium text-gray-700 transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 after:content-[''] hover:text-black hover:after:w-full">Contact</a>
+                    </nav>
+                    <!-- Right-side items: Cart and Button (Desktop) -->
+                    <div class="ml-8 hidden items-center lg:flex lg:space-x-5">
+                        <a href="#" class="relative p-2 text-gray-700 transition-colors duration-200 hover:text-black">
+                            <span class="sr-only">Shopping Cart</span>
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+                                <path d="M216.3,88.3a8,8,0,0,0-8.2-7.1H176V72a48,48,0,0,0-96,0v8.8H48.2a8,8,0,0,0-8.2,7.1L32.2,199.1A16,16,0,0,0,48,216H208a16,16,0,0,0,15.8-16.9ZM96,72a32,32,0,0,1,64,0v8.8H96ZM48,200,59.7,96.8H80V120a8,8,0,0,0,16,0V96.8h64V120a8,8,0,0,0,16,0V96.8h20.3L192,200Z"></path>
+                            </svg>
+                            <span class="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white">0</span>
+                        </a>
+                        <a href="https://smktennis.com.au/booking/" class="inline-block transform rounded bg-[#93b353] px-5 py-3 text-sm font-semibold whitespace-nowrap text-white uppercase transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7a9646]"> BOOK A COURT </a>
+                    </div>
+
+                    <!-- Hamburger Menu Button (Mobile) -->
+                    <div class="flex items-center lg:hidden">
+                        <button id="menu-toggle" type="button" class="inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-gray-500 focus:outline-none focus:ring-inset" aria-controls="navbar-menu" aria-expanded="false">
+                            <span class="sr-only">Open main menu</span>
+                            <svg id="menu-icon-open" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                            <svg id="menu-icon-close" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile Menu Panel -->
+            <div id="navbar-menu" class="absolute z-[9999] hidden w-full border-b border-gray-200 bg-white shadow-lg lg:hidden">
+                <div class="space-y-1 px-2 pt-2 pb-3 sm:px-3">
+                    <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">About Us</a>
+
+                    <div>
+                        <div id="coaching-toggle-mobile" class="flex cursor-pointer w-auto items-center justify-between rounded-md bg-gray-50 px-3 py-2 text-left text-base font-medium text-black">
+                            <span>Coaching</span>
+                            <svg class="h-5 w-5 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                        <div id="coaching-submenu-mobile" class="mt-1 hidden space-y-1 pl-6">
+                            <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-50">Junior coaching</a>
+                            <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-50">Adults coaching</a>
+                            <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-50">Performance Squad</a>
+                        </div>
+                    </div>
+                    <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Competitions</a>
+                    <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Resources</a>
+                    <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Shop</a>
+                    <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50">Contact</a>
+                </div>
+
+                <div class="space-y-4 border-t border-gray-200 px-4 py-4">
+                    <a href="#" class="relative -ml-2 flex w-min items-center rounded-md p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-50">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+                            <path d="M216.3,88.3a8,8,0,0,0-8.2-7.1H176V72a48,48,0,0,0-96,0v8.8H48.2a8,8,0,0,0-8.2,7.1L32.2,199.1A16,16,0,0,0,48,216H208a16,16,0,0,0,15.8-16.9ZM96,72a32,32,0,0,1,64,0v8.8H96ZM48,200,59.7,96.8H80V120a8,8,0,0,0,16,0V96.8h64V120a8,8,0,0,0,16,0V96.8h20.3L192,200Z"></path>
+                        </svg>
+                        <span class="absolute top-0 left-5 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white">0</span>
+                        <span class="ml-8 text-base font-medium">Cart</span>
+                    </a>
+                    <button href="https://smktennis.com.au/booking/" class="block cursor-pointer w-full transform rounded bg-[#93b353] px-5 py-3 text-center text-sm font-semibold text-white uppercase transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#7a9646] hover:text-white">BOOK A COURT</button>
+                </div>
+            </div>
+        </header>
     </div>
+    <!-- End of New Header Code -->
 
-    <div id="content" class="max-w-7xl mx-auto px-6">
+    <div id="content" class="max-w-7xl mx-auto px-6 mt-6">
         <?= $this->messages() ?>
 
         <?= $this->tabs() ?>

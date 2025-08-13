@@ -40,7 +40,8 @@ class SessionController extends AbstractActionController
                         $user = $loginResult->getIdentity();
 
                         $this->flashMessenger()->addSuccessMessage(
-                            sprintf($this->t('Welcome, %s'), $user->need('alias')));
+                            sprintf($this->t('Welcome, %s'), $user->need('alias'))
+                        );
 
                         return $this->redirectBack()->toOrigin();
 
@@ -86,7 +87,7 @@ class SessionController extends AbstractActionController
                 }
             }
 
-            $loginForm->setData( $loginForm->getData() );
+            $loginForm->setData($loginForm->getData());
         }
 
         return array(
@@ -103,10 +104,15 @@ class SessionController extends AbstractActionController
         $userSessionManager = $serviceManager->get('User\Manager\UserSessionManager');
         $user = $userSessionManager->getSessionUser();
 
-        return array(
-            'result' => $userSessionManager->logout(),
-            'user' => $user,
-        );
-    }
+        $result = $userSessionManager->logout();
 
+        // Redirect to frontend/calendar view after logout
+        if ($result) {
+            $this->flashMessenger()->addSuccessMessage(
+                sprintf($this->t('Bye, %s'), $user->need('alias'))
+            );
+        }
+
+        return $this->redirect()->toRoute('frontend');
+    }
 }
