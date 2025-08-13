@@ -4,6 +4,7 @@ namespace User\Controller;
 
 use DateTime;
 use RuntimeException;
+use Zend\Authentication\Result as ResultAlias;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -25,7 +26,7 @@ class AccountController extends AbstractActionController
                 $passwordData = $passwordForm->getData();
 
                 $userManager = $serviceManager->get('User\Manager\UserManager');
-                $user = current( $userManager->getBy(array('email' => $passwordData['pf-email'])) );
+                $user = current($userManager->getBy(array('email' => $passwordData['pf-email'])));
 
                 if ($user) {
                     $mailMessage = $this->t('We have just received your request to reset your password.') . "\r\n\r\n";
@@ -43,7 +44,7 @@ class AccountController extends AbstractActionController
 
                             break;
                         case 'enabled':
-                            $resetCode = base64_encode( substr($user->need('pw'), 16, 8) );
+                            $resetCode = base64_encode(substr($user->need('pw'), 16, 8));
 
                             $mailMessage .= $this->t('Simply visit the following website to type your new password:') . "\r\n\r\n";
                             $mailMessage .= $this->url()->fromRoute('user/password-reset', [], ['query' => ['id' => $user->need('uid'), 'code' => $resetCode], 'force_canonical' => true]);
@@ -65,9 +66,11 @@ class AccountController extends AbstractActionController
 
             $passwordForm->get('pf-email')->setValue('');
 
-            $passwordMessage = sprintf('%s <div class="small-text">(%s)</div>',
+            $passwordMessage = sprintf(
+                '%s <div class="small-text">(%s)</div>',
                 $this->t('All right, you should receive an email from us soon'),
-                $this->t('if we find a valid user account with this email address'));
+                $this->t('if we find a valid user account with this email address')
+            );
         }
 
         return array(
@@ -94,7 +97,7 @@ class AccountController extends AbstractActionController
             throw new RuntimeException('Your token to reset your password is invalid or expired. Please request a new email.');
         }
 
-        $actualResetCode = base64_encode( substr($user->need('pw'), 16, 8) );
+        $actualResetCode = base64_encode(substr($user->need('pw'), 16, 8));
 
         if ($resetCode != $actualResetCode) {
             throw new RuntimeException('Your token to reset your password is invalid or expired. Please request a new email.');
@@ -193,14 +196,31 @@ class AccountController extends AbstractActionController
 
                 $userManager->save($user);
 
+                /* Auto-login if activation is immediate */
+                if ($this->option('service.user.activation') == 'immediate') {
+                    $userSessionManager = $serviceManager->get('User\Manager\UserSessionManager');
+                    $loginResult = $userSessionManager->login($registrationData['rf-email1'], $registrationData['rf-pw1']);
+
+                    if ($loginResult->getCode() == ResultAlias::SUCCESS) {
+                        $this->flashMessenger()->addSuccessMessage(
+                            sprintf($this->t('Welcome, %s! Your account has been created and you are now logged in.'), $user->need('alias'))
+                        );
+                        return $this->redirect()->toRoute('frontend');
+                    }
+                }
+
                 /* Send confirmation email to administration for manual activation */
 
                 if ($this->option('service.user.activation') == 'manual-email') {
                     $backendMailService = $serviceManager->get('Backend\Service\MailService');
                     $backendMailService->send(
                         $this->t('New registration waiting for activation'),
-                        sprintf($this->t('A new user has registered to your %s. According to your configuration, this user will not be able to book %s until you manually activate him.'),
-                            $this->option('service.name.full', false), $this->option('subject.square.type.plural', false)));
+                        sprintf(
+                            $this->t('A new user has registered to your %s. According to your configuration, this user will not be able to book %s until you manually activate him.'),
+                            $this->option('service.name.full', false),
+                            $this->option('subject.square.type.plural', false)
+                        )
+                    );
                 }
 
                 /* Send confirmation email to user for activation */
@@ -209,14 +229,22 @@ class AccountController extends AbstractActionController
 
                     /* Activation code is "created" hash */
 
-                    $activationCode = urlencode( sha1($user->need('created')) );
+                    $activationCode = urlencode(sha1($user->need('created')));
                     $activationLink = $this->url()->fromRoute('user/activation', [], ['query' => ['id' => $user->need('uid'), 'code' => $activationCode], 'force_canonical' => true]);
 
-                    $subject = sprintf($this->t('Your registration to the %s %s'),
-                        $this->option('client.name.short', false), $this->option('service.name.full', false));
+                    $subject = sprintf(
+                        $this->t('Your registration to the %s %s'),
+                        $this->option('client.name.short', false),
+                        $this->option('service.name.full', false)
+                    );
 
-                    $text = sprintf($this->t("welcome to the %s %s!\r\n\r\nThank you for your registration to our service.\r\n\r\nBefore you can completely use your new user account to book spare %s online, you have to activate it by simply clicking the following link. That's all!\r\n\r\n%s"),
-                        $this->option('client.name.full', false), $this->option('service.name.full', false), $this->option('subject.square.type.plural', false), $activationLink);
+                    $text = sprintf(
+                        $this->t("welcome to the %s %s!\r\n\r\nThank you for your registration to our service.\r\n\r\nBefore you can completely use your new user account to book spare %s online, you have to activate it by simply clicking the following link. That's all!\r\n\r\n%s"),
+                        $this->option('client.name.full', false),
+                        $this->option('service.name.full', false),
+                        $this->option('subject.square.type.plural', false),
+                        $activationLink
+                    );
 
                     $userMailService = $serviceManager->get('User\Service\MailService');
                     $userMailService->send($user, $subject, $text);
@@ -287,7 +315,7 @@ class AccountController extends AbstractActionController
                 $activationResendData = $activationResendForm->getData();
 
                 $userManager = $serviceManager->get('User\Manager\UserManager');
-                $user = current( $userManager->getBy(array('email' => $activationResendData['arf-email'])) );
+                $user = current($userManager->getBy(array('email' => $activationResendData['arf-email'])));
 
                 if ($user) {
                     $mailMessage = $this->t('We have just received your request for a new user account activation email.') . "\r\n\r\n";
@@ -303,11 +331,14 @@ class AccountController extends AbstractActionController
 
                             /* Activation code is "created" hash */
 
-                            $activationCode = urlencode( sha1($user->need('created')) );
+                            $activationCode = urlencode(sha1($user->need('created')));
                             $activationLink = $this->url()->fromRoute('user/activation', [], ['query' => ['id' => $user->need('uid'), 'code' => $activationCode], 'force_canonical' => true]);
 
-                            $mailMessage .= sprintf($this->t("Before you can completely use your new user account to book spare %s online, you have to activate it by simply clicking the following link. That's all!\r\n\r\n%s"),
-                                $this->option('subject.square.type.plural', false), $activationLink);
+                            $mailMessage .= sprintf(
+                                $this->t("Before you can completely use your new user account to book spare %s online, you have to activate it by simply clicking the following link. That's all!\r\n\r\n%s"),
+                                $this->option('subject.square.type.plural', false),
+                                $activationLink
+                            );
 
                             break;
                         case 'enabled':
@@ -327,9 +358,11 @@ class AccountController extends AbstractActionController
 
             $activationResendForm->get('arf-email')->setValue('');
 
-            $activationResendMessage = sprintf('%s <div class="small-text">(%s)</div>',
+            $activationResendMessage = sprintf(
+                '%s <div class="small-text">(%s)</div>',
                 $this->t('All right, you should receive an email from us soon'),
-                $this->t('if we find a valid user account with this email address'));
+                $this->t('if we find a valid user account with this email address')
+            );
         }
 
         return array(
@@ -442,8 +475,11 @@ class AccountController extends AbstractActionController
                 $user->setMeta('phone', $phone);
                 $userManager->save($user);
 
-                $this->flashMessenger()->addSuccessMessage(sprintf($this->t('Your %sphone number%s has been updated'),
-                    '<b>', '</b>'));
+                $this->flashMessenger()->addSuccessMessage(sprintf(
+                    $this->t('Your %sphone number%s has been updated'),
+                    '<b>',
+                    '</b>'
+                ));
 
                 return $this->redirect()->toRoute('user/settings');
             }
@@ -467,21 +503,29 @@ class AccountController extends AbstractActionController
 
                 if ($this->option('service.user.activation') == 'email') {
 
-                    $user->setMeta('status_before_reactivation',
-                        $user->get('status'));
+                    $user->setMeta(
+                        'status_before_reactivation',
+                        $user->get('status')
+                    );
 
                     $user->set('status', 'disabled');
 
                     /* Activation code is "created" hash */
 
-                    $activationCode = urlencode( sha1($user->need('created')) );
+                    $activationCode = urlencode(sha1($user->need('created')));
                     $activationLink = $this->url()->fromRoute('user/activation', [], ['query' => ['id' => $user->need('uid'), 'code' => $activationCode], 'force_canonical' => true]);
 
-                    $subject = sprintf($this->t('New email address at %s %s'),
-                        $this->option('client.name.short', false), $this->option('service.name.full', false));
+                    $subject = sprintf(
+                        $this->t('New email address at %s %s'),
+                        $this->option('client.name.short', false),
+                        $this->option('service.name.full', false)
+                    );
 
-                    $text = sprintf($this->t("You have just changed your account's email address to this one.\r\n\r\nBefore you can completely use your new email address to book spare %s online again, you have to activate it by simply clicking the following link. That's all!\r\n\r\n%s"),
-                        $this->option('subject.square.type.plural', false), $activationLink);
+                    $text = sprintf(
+                        $this->t("You have just changed your account's email address to this one.\r\n\r\nBefore you can completely use your new email address to book spare %s online again, you have to activate it by simply clicking the following link. That's all!\r\n\r\n%s"),
+                        $this->option('subject.square.type.plural', false),
+                        $activationLink
+                    );
 
                     $userMailService = $serviceManager->get('User\Service\MailService');
                     $userMailService->send($user, $subject, $text);
@@ -489,8 +533,11 @@ class AccountController extends AbstractActionController
 
                 $userManager->save($user);
 
-                $this->flashMessenger()->addSuccessMessage(sprintf($this->t('Your %semail address%s has been updated'),
-                    '<b>', '</b>'));
+                $this->flashMessenger()->addSuccessMessage(sprintf(
+                    $this->t('Your %semail address%s has been updated'),
+                    '<b>',
+                    '</b>'
+                ));
 
                 return $this->redirect()->toRoute('user/settings');
             }
@@ -515,8 +562,11 @@ class AccountController extends AbstractActionController
 
                 $userManager->save($user);
 
-                $this->flashMessenger()->addSuccessMessage(sprintf($this->t('Your %snotification settings%s have been updated'),
-                    '<b>', '</b>'));
+                $this->flashMessenger()->addSuccessMessage(sprintf(
+                    $this->t('Your %snotification settings%s have been updated'),
+                    '<b>',
+                    '</b>'
+                ));
 
                 return $this->redirect()->toRoute('user/settings');
             }
@@ -545,8 +595,11 @@ class AccountController extends AbstractActionController
                     $user->set('pw', $bcrypt->create($passwordNew));
                     $userManager->save($user);
 
-                    $this->flashMessenger()->addSuccessMessage(sprintf($this->t('Your %spassword%s has been updated'),
-                        '<b>', '</b>'));
+                    $this->flashMessenger()->addSuccessMessage(sprintf(
+                        $this->t('Your %spassword%s has been updated'),
+                        '<b>',
+                        '</b>'
+                    ));
 
                     return $this->redirect()->toRoute('user/settings');
                 } else {
@@ -585,8 +638,11 @@ class AccountController extends AbstractActionController
                     $userManager->save($user);
                     $userSessionManager->logout();
 
-                    $deleteAccountMessage = sprintf($this->t('Your %suser account has been deleted%s. Good bye!'),
-                        '<b>', '</b>');
+                    $deleteAccountMessage = sprintf(
+                        $this->t('Your %suser account has been deleted%s. Good bye!'),
+                        '<b>',
+                        '</b>'
+                    );
                 } else {
                     $editPasswordForm->get('epf-pw-current')->setMessages(array('This is not your correct password'));
                 }
@@ -603,5 +659,4 @@ class AccountController extends AbstractActionController
             'deleteAccountMessage' => $deleteAccountMessage,
         );
     }
-
 }
