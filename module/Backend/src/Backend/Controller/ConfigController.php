@@ -118,10 +118,14 @@ class ConfigController extends AbstractActionController
             $stripeEnabled = $this->params()->fromPost('cf-stripe-enabled') === 'on';
             $testMode = $this->params()->fromPost('cf-test-mode') === 'on';
             $includeFees = $this->params()->fromPost('cf-include-fees') === 'on';
+            $useWebhook = $this->params()->fromPost('cf-use-webhook') === 'on';
+            $useSessionCheck = $this->params()->fromPost('cf-use-session-check') === 'on';
 
             $optionManager->set('service.payment.stripe.enabled', $stripeEnabled);
             $optionManager->set('service.payment.stripe.test_mode', $testMode);
             $optionManager->set('service.payment.stripe.include_fees', $includeFees);
+            $optionManager->set('service.payment.stripe.use_webhook', $useWebhook);
+            $optionManager->set('service.payment.stripe.use_session_check', $useSessionCheck);
 
             $this->flashMessenger()->addSuccessMessage('Payment settings have been saved');
 
@@ -147,10 +151,24 @@ class ConfigController extends AbstractActionController
             $optionManager->set('service.payment.stripe.include_fees', false);
         }
 
+        try {
+            $optionManager->get('service.payment.stripe.use_webhook', false);
+        } catch (RuntimeException $e) {
+            $optionManager->set('service.payment.stripe.use_webhook', true);
+        }
+
+        try {
+            $optionManager->get('service.payment.stripe.use_session_check', false);
+        } catch (RuntimeException $e) {
+            $optionManager->set('service.payment.stripe.use_session_check', true);
+        }
+
         return array(
             'stripeEnabled' => $optionManager->get('service.payment.stripe.enabled', false),
             'testMode' => $optionManager->get('service.payment.stripe.test_mode', true),
             'includeFees' => $optionManager->get('service.payment.stripe.include_fees', false),
+            'useWebhook' => $optionManager->get('service.payment.stripe.use_webhook', true),
+            'useSessionCheck' => $optionManager->get('service.payment.stripe.use_session_check', true),
         );
     }
 

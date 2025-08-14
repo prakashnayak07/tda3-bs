@@ -64,6 +64,32 @@ $this->setup(array(
                 <tr>
                     <td class="default-form-label-row"></td>
                     <td colspan="2">
+                        <div style="position: relative; top: -8px;">
+                            <input type="checkbox" name="cf-use-webhook" value="on" <?= $useWebhook ? 'checked' : '' ?>>
+                            <label><?= $this->t('Use Webhook for Payment Validation') ?></label>
+                        </div>
+                        <div class="default-form-notes">
+                            <?= $this->t('Use Stripe webhooks to validate payment success (recommended for production)') ?>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="default-form-label-row"></td>
+                    <td colspan="2">
+                        <div style="position: relative; top: -8px;">
+                            <input type="checkbox" name="cf-use-session-check" value="on" <?= $useSessionCheck ? 'checked' : '' ?>>
+                            <label><?= $this->t('Use Session Check for Payment Validation') ?></label>
+                        </div>
+                        <div class="default-form-notes">
+                            <?= $this->t('Use direct Stripe API calls to check session status (works without webhooks)') ?>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="default-form-label-row"></td>
+                    <td colspan="2">
                         <button type="submit" class="default-button"><?= $this->t('Save') ?></button>
                     </td>
                 </tr>

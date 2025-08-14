@@ -16,16 +16,17 @@ return [
         'hostname' => 'localhost',
         'port' => null,
     ],
+
     'mail' => [
-        'type' => 'file', // or 'smtp' or 'smtp-tls' or type=> 'sendmail' (or 'file', to not send, but save to file (data/mails/))
-        'address' => 'smktennis@hotmail.com',
+        'type' => 'smtp', // or 'smtp' or 'smtp-tls' or type=> 'sendmail' (or 'file', to not send, but save to file (data/mails/))
+        'address' => 'info@smktennis.com.au',
         // Make sure 'bookings.example.com' matches the hosting domain when using type 'sendmail'
 
-        'host' => '?', // for 'smtp' type only, otherwise remove or leave as is
-        'user' => '?', // for 'smtp' type only, otherwise remove or leave as is
-        'pw' => '?', // for 'smtp' type only, otherwise remove or leave as is
+        'host' => 'smtp.mailgun.org', // for 'smtp' type only, otherwise remove or leave as is
+        'user' => 'info@smktennis.com.au', // for 'smtp' type only, otherwise remove or leave as is
+        'pw' => 'info@123[]', // for 'smtp' type only, otherwise remove or leave as is
 
-        'port' => 'auto', // for 'smtp' type only, otherwise remove or leave as is
+        'port' => '587', // for 'smtp' type only, otherwise remove or leave as is
         'auth' => 'plain', // for 'smtp' type only, change this to 'login' if you have problems with SMTP authentication
     ],
     'i18n' => [
