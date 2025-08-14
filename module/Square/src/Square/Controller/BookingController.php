@@ -260,7 +260,15 @@ class BookingController extends AbstractActionController
                         $successUrl = $this->url()->fromRoute('payment/success', [], ['force_canonical' => true]);
                         $cancelUrl = $this->url()->fromRoute('payment/cancel', [], ['force_canonical' => true]);
 
-                        $session = $stripeService->createCheckoutSession($bookingData, $successUrl, $cancelUrl);
+                        // Check if fees should be included
+                        $includeFees = $optionManager->get('service.payment.stripe.include_fees', false);
+                        $isInternational = false; // You can detect this based on user location or card type
+
+                        if ($includeFees) {
+                            $session = $stripeService->createCheckoutSessionWithFees($bookingData, $successUrl, $cancelUrl, true, $isInternational);
+                        } else {
+                            $session = $stripeService->createCheckoutSession($bookingData, $successUrl, $cancelUrl);
+                        }
 
                         // Redirect to Stripe payment
                         return $this->redirect()->toUrl($session->url);

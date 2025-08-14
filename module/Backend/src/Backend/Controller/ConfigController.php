@@ -3,6 +3,7 @@
 namespace Backend\Controller;
 
 use Backend\Form\Config\TextForm;
+use RuntimeException;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class ConfigController extends AbstractActionController
@@ -116,18 +117,40 @@ class ConfigController extends AbstractActionController
         if ($this->getRequest()->isPost()) {
             $stripeEnabled = $this->params()->fromPost('cf-stripe-enabled') === 'on';
             $testMode = $this->params()->fromPost('cf-test-mode') === 'on';
+            $includeFees = $this->params()->fromPost('cf-include-fees') === 'on';
 
             $optionManager->set('service.payment.stripe.enabled', $stripeEnabled);
             $optionManager->set('service.payment.stripe.test_mode', $testMode);
+            $optionManager->set('service.payment.stripe.include_fees', $includeFees);
 
             $this->flashMessenger()->addSuccessMessage('Payment settings have been saved');
 
             return $this->redirect()->toRoute('backend/config/payment');
         }
 
+        // Initialize payment options if they don't exist
+        try {
+            $optionManager->get('service.payment.stripe.enabled', false);
+        } catch (RuntimeException $e) {
+            $optionManager->set('service.payment.stripe.enabled', false);
+        }
+
+        try {
+            $optionManager->get('service.payment.stripe.test_mode', false);
+        } catch (RuntimeException $e) {
+            $optionManager->set('service.payment.stripe.test_mode', true);
+        }
+
+        try {
+            $optionManager->get('service.payment.stripe.include_fees', false);
+        } catch (RuntimeException $e) {
+            $optionManager->set('service.payment.stripe.include_fees', false);
+        }
+
         return array(
             'stripeEnabled' => $optionManager->get('service.payment.stripe.enabled', false),
             'testMode' => $optionManager->get('service.payment.stripe.test_mode', true),
+            'includeFees' => $optionManager->get('service.payment.stripe.include_fees', false),
         );
     }
 

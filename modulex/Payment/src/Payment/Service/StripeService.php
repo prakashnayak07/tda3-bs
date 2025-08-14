@@ -164,4 +164,257 @@ class StripeService
             throw new RuntimeException('Invalid signature');
         }
     }
+
+    /**
+     * Create a Payment Intent for direct charging
+     * 
+     * @param array $bookingData
+     * @param string $paymentMethodId
+     * @return \Stripe\PaymentIntent
+     */
+    public function createPaymentIntent(array $bookingData, string $paymentMethodId)
+    {
+        // Calculate total amount
+        $totalAmount = 0;
+        foreach ($bookingData['bills'] as $bill) {
+            $totalAmount += (float)$bill['price'] * 100; // Convert to cents
+        }
+
+        $paymentIntentData = [
+            'amount' => (int)round($totalAmount),
+            'currency' => $this->config['currency'] ?? 'AUD',
+            'payment_method' => $paymentMethodId,
+            'confirm' => true,
+            'return_url' => $this->getReturnUrl(),
+            'metadata' => [
+                'user_id' => $bookingData['user_id'],
+                'square_id' => $bookingData['square_id'],
+                'booking_type' => 'court_booking',
+            ],
+        ];
+
+        // Add customer email if available
+        if (isset($bookingData['customer_email'])) {
+            $paymentIntentData['receipt_email'] = $bookingData['customer_email'];
+        }
+
+        error_log('Creating Payment Intent: Amount ' . ($totalAmount / 100) . ' AUD');
+
+        return \Stripe\PaymentIntent::create($paymentIntentData);
+    }
+
+    /**
+     * Create a Payment Intent without confirming (for client-side confirmation)
+     * 
+     * @param array $bookingData
+     * @return \Stripe\PaymentIntent
+     */
+    public function createUnconfirmedPaymentIntent(array $bookingData)
+    {
+        // Calculate total amount
+        $totalAmount = 0;
+        foreach ($bookingData['bills'] as $bill) {
+            $totalAmount += (float)$bill['price'] * 100; // Convert to cents
+        }
+
+        $paymentIntentData = [
+            'amount' => (int)round($totalAmount),
+            'currency' => $this->config['currency'] ?? 'AUD',
+            'automatic_payment_methods' => [
+                'enabled' => true,
+            ],
+            'metadata' => [
+                'user_id' => $bookingData['user_id'],
+                'square_id' => $bookingData['square_id'],
+                'booking_type' => 'court_booking',
+            ],
+        ];
+
+        // Add customer email if available
+        if (isset($bookingData['customer_email'])) {
+            $paymentIntentData['receipt_email'] = $bookingData['customer_email'];
+        }
+
+        error_log('Creating unconfirmed Payment Intent: Amount ' . ($totalAmount / 100) . ' AUD');
+
+        return \Stripe\PaymentIntent::create($paymentIntentData);
+    }
+
+    /**
+     * Confirm a Payment Intent with payment method
+     * 
+     * @param string $paymentIntentId
+     * @param string $paymentMethodId
+     * @return \Stripe\PaymentIntent
+     */
+    public function confirmPaymentIntent(string $paymentIntentId, string $paymentMethodId)
+    {
+        return \Stripe\PaymentIntent::update($paymentIntentId, [
+            'payment_method' => $paymentMethodId,
+        ])->confirm();
+    }
+
+    /**
+     * Retrieve a Payment Intent
+     * 
+     * @param string $paymentIntentId
+     * @return \Stripe\PaymentIntent
+     */
+    public function getPaymentIntent(string $paymentIntentId)
+    {
+        return \Stripe\PaymentIntent::retrieve($paymentIntentId);
+    }
+
+    /**
+     * Create a customer for recurring payments
+     * 
+     * @param array $customerData
+     * @return \Stripe\Customer
+     */
+    public function createCustomer(array $customerData)
+    {
+        $customerData = [
+            'email' => $customerData['email'],
+            'name' => $customerData['name'] ?? '',
+            'metadata' => [
+                'user_id' => $customerData['user_id'] ?? '',
+            ],
+        ];
+
+        return \Stripe\Customer::create($customerData);
+    }
+
+    /**
+     * Create a subscription for recurring payments
+     * 
+     * @param string $customerId
+     * @param string $priceId
+     * @return \Stripe\Subscription
+     */
+    public function createSubscription(string $customerId, string $priceId)
+    {
+        return \Stripe\Subscription::create([
+            'customer' => $customerId,
+            'items' => [
+                ['price' => $priceId],
+            ],
+            'payment_behavior' => 'default_incomplete',
+            'expand' => ['latest_invoice.payment_intent'],
+        ]);
+    }
+
+    /**
+     * Get return URL for payment confirmation
+     * 
+     * @return string
+     */
+    private function getReturnUrl()
+    {
+        // You can customize this based on your needs
+        return 'https://your-domain.com/payment/return';
+    }
+
+    /**
+     * Calculate Stripe processing fees for Australia
+     * 
+     * @param float $amount Amount in AUD
+     * @param bool $isInternational Whether it's an international card
+     * @return array Array with fee amount and total
+     */
+    public function calculateStripeFees(float $amount, bool $isInternational = false)
+    {
+        // Stripe fees for Australia
+        $percentageFee = $isInternational ? 0.029 : 0.0175; // 2.9% or 1.75%
+        $fixedFee = 0.30; // 30 cents AUD
+
+        $percentageAmount = $amount * $percentageFee;
+        $totalFee = $percentageAmount + $fixedFee;
+        $totalWithFees = $amount + $totalFee;
+
+        return [
+            'original_amount' => $amount,
+            'percentage_fee' => $percentageAmount,
+            'fixed_fee' => $fixedFee,
+            'total_fee' => $totalFee,
+            'total_with_fees' => $totalWithFees,
+            'fee_percentage' => ($totalFee / $amount) * 100,
+        ];
+    }
+
+    /**
+     * Add Stripe fees to booking data
+     * 
+     * @param array $bookingData
+     * @param bool $isInternational
+     * @return array Updated booking data with fees
+     */
+    public function addStripeFees(array $bookingData, bool $isInternational = false)
+    {
+        // Calculate total amount
+        $totalAmount = 0;
+        foreach ($bookingData['bills'] as $bill) {
+            $totalAmount += (float)$bill['price'];
+        }
+
+        // Calculate fees
+        $feeCalculation = $this->calculateStripeFees($totalAmount, $isInternational);
+
+        // Add fee as a separate line item
+        $bookingData['bills'][] = [
+            'description' => 'Payment Processing Fee',
+            'quantity' => 1,
+            'price' => $feeCalculation['total_fee'],
+            'rate' => 0, // No additional tax on fees
+            'gross' => true, // Fee is gross amount
+        ];
+
+        error_log('Stripe fees added: Original ' . $feeCalculation['original_amount'] .
+            ' AUD, Fee ' . $feeCalculation['total_fee'] .
+            ' AUD (' . round($feeCalculation['fee_percentage'], 2) . '%), ' .
+            'Total ' . $feeCalculation['total_with_fees'] . ' AUD');
+
+        return $bookingData;
+    }
+
+    /**
+     * Create checkout session with fees included
+     * 
+     * @param array $bookingData
+     * @param string $successUrl
+     * @param string $cancelUrl
+     * @param bool $includeFees Whether to include Stripe fees
+     * @param bool $isInternational Whether it's an international card
+     * @return \Stripe\Checkout\Session
+     */
+    public function createCheckoutSessionWithFees(array $bookingData, string $successUrl, string $cancelUrl, bool $includeFees = false, bool $isInternational = false)
+    {
+        if ($includeFees) {
+            $bookingData = $this->addStripeFees($bookingData, $isInternational);
+        }
+
+        return $this->createCheckoutSession($bookingData, $successUrl, $cancelUrl);
+    }
+
+    /**
+     * Get fee information for display
+     * 
+     * @param float $amount
+     * @param bool $isInternational
+     * @return array Fee information for display
+     */
+    public function getFeeInfo(float $amount, bool $isInternational = false)
+    {
+        $fees = $this->calculateStripeFees($amount, $isInternational);
+
+        return [
+            'fee_amount' => $fees['total_fee'],
+            'fee_percentage' => $fees['fee_percentage'],
+            'total_with_fees' => $fees['total_with_fees'],
+            'fee_breakdown' => [
+                'percentage' => $fees['percentage_fee'],
+                'fixed' => $fees['fixed_fee'],
+            ],
+            'card_type' => $isInternational ? 'International' : 'Domestic',
+        ];
+    }
 }

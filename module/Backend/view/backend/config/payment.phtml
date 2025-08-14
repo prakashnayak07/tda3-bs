@@ -51,6 +51,19 @@ $this->setup(array(
                 <tr>
                     <td class="default-form-label-row"></td>
                     <td colspan="2">
+                        <div style="position: relative; top: -8px;">
+                            <input type="checkbox" name="cf-include-fees" value="on" <?= $includeFees ? 'checked' : '' ?>>
+                            <label><?= $this->t('Include Stripe Processing Fees') ?></label>
+                        </div>
+                        <div class="default-form-notes">
+                            <?= $this->t('Add Stripe processing fees (1.75% + 30¢ for domestic, 2.9% + 30¢ for international) to customer charges') ?>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="default-form-label-row"></td>
+                    <td colspan="2">
                         <button type="submit" class="default-button"><?= $this->t('Save') ?></button>
                     </td>
                 </tr>
