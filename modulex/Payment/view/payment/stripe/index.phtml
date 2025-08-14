@@ -1,0 +1,60 @@
+<?php
+$this->setup(array(
+    'title' => 'Payment Processing',
+    'panel' => 'centered-panel',
+));
+?>
+
+<div>
+    <h1><?= $this->t('Payment Processing') ?></h1>
+
+    <div class="separator-small"></div>
+
+    <div id="payment-status">
+        <p><?= $this->t('Redirecting to payment processor...') ?></p>
+        <div class="loader">Loading...</div>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('<?= $this->publishableKey ?>');
+
+    // Redirect to Stripe Checkout
+    stripe.redirectToCheckout({
+        sessionId: '<?= $this->sessionId ?>'
+    }).then(function(result) {
+        // If there's an error, show it to the customer
+        if (result.error) {
+            document.getElementById('payment-status').innerHTML =
+                '<p class="error">' + result.error.message + '</p>';
+        }
+    });
+</script>
+
+<style>
+    .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .error {
+        color: red;
+        font-weight: bold;
+    }
+</style>
